@@ -4,6 +4,7 @@
 #include <exception>
 #include <filesystem>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #ifdef _MSC_VER
@@ -19,7 +20,7 @@ using byte_block_t = unsigned char[N];
 
 template <std::size_t N>
 struct binary_embed {
-    std::string filename;
+    std::string_view filename;
     byte_block_t<N> data;
 };
 

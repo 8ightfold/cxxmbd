@@ -1,7 +1,7 @@
 #ifndef CXXMBD_CXXMBD_HPP
 #define CXXMBD_CXXMBD_HPP
 
-#define CXXMBD_VER "1.0.1"
+#define CXXMBD_VER "1.0.2"
 
 #include <algorithm>
 #include <cstddef>
@@ -17,21 +17,6 @@
 
 
 namespace cxxmbd {
-/*
- * template <std::size_t N>
- * using byte_block_t = unsigned char[N];
- *
- * template <std::size_t N>
- * struct binary_embed {
- *    std::string filename;
- *    byte_block_t<N> data;
- * };
- *
- * binary_embed<N> filename {
- *    "filename.ext", 0x01, 0x30, 0x60, ...
- * }
- */
-
     void
     read_binary_contents(std::vector<byte_t>& vec, const fs::path& filepath);
 

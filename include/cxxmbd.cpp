@@ -39,7 +39,7 @@ namespace cxxmbd {
         try { read_binary_contents(bin, file); }
         catch(std::exception& e) { std::cout << e.what() << "\n"; return; }
 
-        ss << "binary_embed<" << (bin.size() + 1) << "> " << file.stem().string() << " {\n";
+        ss << "constexpr binary_embed<" << (bin.size() + 1) << "> " << file.stem().string() << " {\n";
         ss << "\t" << file.filename() << ", { ";
 
         std::size_t n_written = 0;

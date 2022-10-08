@@ -8,7 +8,7 @@
 namespace cxxmbd {
     template <std::size_t N>
     fs::path
-    decode_embed(binary_embed<N>& file, fs::path dir = fs::current_path()) {
+    decode_embed(const binary_embed<N>& file, fs::path dir = fs::current_path()) {
         fs::path opath { file.filename };
         opath = (dir /= opath);
         std::ofstream os (opath, std::ios::out | std::ios::binary );
