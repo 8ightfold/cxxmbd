@@ -41,4 +41,4 @@ This will create a new file in the program's current directory. You can also sup
 
 ## Notes
 
-This program is in its very early stages, so if you encounter any bugs be sure to let me know!
+This program is in its very early stages, so if you encounter any bugs, be sure to let me know!
