@@ -5,7 +5,7 @@ cxxmbd is a set of utilities for embedding and decoding files as binary. It cons
 ## Building the CLI
 
 Building the embedder is very simple. All you have to do is create a file called ``cxxmbd.cpp`` on your IDE of choice, include ``cxxmbd.hpp``, and then write the following:
-```
+```cpp
 int main(int argc, int* argv[]) {
   try {
     cxxmbd::handle_cl_args(argc, argv);
@@ -34,7 +34,7 @@ Your data will be embedded using the name(s) of the files you input. For example
 With this, you can now decode your files.
 
 To decode a struct, all you need to do is include ``mbddecoder.hpp`` and then write:
-```
+```cpp
 cxxmbd::decode_embed(example);
 ```
 This will create a new file in the program's current directory. You can also supply a custom path to create the file in.
