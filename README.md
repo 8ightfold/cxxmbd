@@ -15,6 +15,18 @@ int main(int argc, int* argv[]) {
   }
 }
 ```
+If you are building ``cxxmbd`` with ``WinMain``, instead write the following:
+```
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+  try {
+    cxxmbd::argument_splitter args { lpCmdLine };
+    cxxmbd::handle_cl_args(args);
+  }
+  catch(std::exception& e) {
+    std::cout << e.what() << "\n\n";
+  }
+}
+```
 You can then get started on embedding your files!
 
 ## Using the CLI
