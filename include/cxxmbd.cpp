@@ -200,4 +200,8 @@ namespace cxxmbd {
             std::cout << "Unknown command. Run 'cxxmbd --help' for more information.\n\n";
         }
     }
+
+    void handle_cl_args(argument_splitter& args) {
+        handle_cl_args(args.argc, (char**)args.argv);
+    }
 }
