@@ -16,7 +16,7 @@ int main(int argc, int* argv[]) {
 }
 ```
 If you are building ``cxxmbd`` with ``WinMain``, instead write the following:
-```
+```cpp
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
   try {
     cxxmbd::argument_splitter args { lpCmdLine };
