@@ -20,11 +20,11 @@ You can then get started on embedding your files!
 ## Using the CLI
 
 To embed a file, you must add a ``EMBED_POINT`` to the source file. You can then run this:
-```
+```bash
 cxxmbd --embed <path-to-output> <path-to-source(s)>
 ```
 You can also dump the data to a text file by running:
-```
+```bash
 cxxmbd --dump <name> <path-to-source(s)>
 ```
 
