@@ -6,7 +6,7 @@ cxxmbd is a set of utilities for embedding and decoding files as binary. It cons
 
 Building the embedder is very simple. All you have to do is create a file called ``cxxmbd.cpp`` on your IDE of choice, include ``cxxmbd.hpp``, and then write the following:
 ```cpp
-int main(int argc, int* argv[]) {
+int main(int argc, char* argv[]) {
   try {
     cxxmbd::handle_cl_args(argc, argv);
   }
