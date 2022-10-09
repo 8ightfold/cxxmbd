@@ -29,11 +29,11 @@ namespace cxxmbd {
     using byte_t = unsigned char;
 
     struct custom_exception : std::exception {
-        custom_exception(const std::string&& str) : data(str) {}
+        explicit custom_exception(const std::string&& str) : data(str) {}
 
         [[nodiscard]]
         const char*
-        what() const noexcept {
+        what() const noexcept override {
             return data.c_str();
         }
     private:
@@ -56,27 +56,27 @@ namespace cxxmbd {
                 }
             }
 
-            explicit operator data_t() {
+            explicit operator data_t() const {
                 return data;
             }
 
-            ~argv_t() { if(data) delete[] data; }
+            ~argv_t() { delete[] data; }
 
             data_t data = nullptr;
         };
 
 #ifdef _MSC_VER
         argument_splitter(const std::wstring cl) {
-        LPWSTR* raw_wargv = CommandLineToArgvW(cl.c_str(), &argc);
-        std::vector<std::wstring> wargv { raw_wargv, raw_wargv + argc };
-        std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+            LPWSTR* raw_wargv = CommandLineToArgvW(cl.c_str(), &argc);
+            std::vector<std::wstring> wargv { raw_wargv, raw_wargv + argc };
+            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 
-        for(auto& wstr : wargv) {
-            argv_underlying.push_back(converter.to_bytes(wstr));
+            for(auto& wstr : wargv) {
+                argv_underlying.push_back(converter.to_bytes(wstr));
+            }
+
+            argv.create(argv_underlying);
         }
-
-        argv.create(argv_underlying);
-    }
 #endif
 
         argument_splitter() = default;
