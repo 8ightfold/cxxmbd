@@ -4,23 +4,13 @@ cxxmbd is a set of utilities for embedding and decoding files as binary. It cons
 
 ## Building the CLI
 
-Building the embedder is very simple. All you have to do is create a main file on your IDE of choice, include ``cxxmbd.hpp``, and then write the following:
+Building the embedder is very simple. All you have to do is include ``linux_main.cpp`` for linux/osx, or ``windows_main.cpp`` for Windows.
+
+If you wish to build it manually, create a main file on your IDE of choice, include ``cxxmbd.hpp``, and then write the following:
 ```cpp
 int main(int argc, char* argv[]) {
   try {
     cxxmbd::handle_cl_args(argc, argv);
-  }
-  catch(std::exception& e) {
-    std::cout << e.what() << "\n\n";
-  }
-}
-```
-If you are building ``cxxmbd`` with ``WinMain``, instead write the following:
-```cpp
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-  try {
-    cxxmbd::argument_splitter args { lpCmdLine };
-    cxxmbd::handle_cl_args(args);
   }
   catch(std::exception& e) {
     std::cout << e.what() << "\n\n";
@@ -35,9 +25,13 @@ To embed a file, you must add an ``EMBED_POINT`` to the source file. You can the
 ```bash
 cxxmbd --embed <path-to-output> <path-to-source(s)>
 ```
-You can also dump the data to a text file by running:
+You can also dump the data to its own text file with the name of your choice by running:
 ```bash
 cxxmbd --dump <name> <path-to-source(s)>
+```
+For more info, run:
+```bash
+cxxmbd --help
 ```
 
 ## Decoding the data
