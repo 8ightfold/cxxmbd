@@ -42,8 +42,8 @@ cxxmbd --dump <name> <path-to-source(s)>
 
 ## Decoding the data
 
-Your data will be embedded using the name(s) of the files you input. For example, if you embed the file ``example.txt``, ``struct<N> example {...};`` will be created. 
-With this, you can now decode your files.
+Your data will be embedded using the name(s) of the files you input. For example, if you embed the file ``example.txt``, 
+``struct<N> example {...};`` will be created. With this, you can now decode your files.
 
 To decode a struct, all you need to do is include ``mbddecoder.hpp`` and then write:
 ```cpp
