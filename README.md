@@ -21,7 +21,7 @@ You can then get started on embedding your files!
 
 ## Using the CLI
 
-To embed a file, you must add an ``EMBED_POINT`` to the source file. You can then run this:
+To embed data in a source file, you must add an ``EMBED_POINT`` to the source file. You can then run this:
 ```bash
 cxxmbd --embed <path-to-output> <path-to-source(s)>
 ```
