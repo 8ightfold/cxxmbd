@@ -10,7 +10,7 @@ Gone is the era of using xxd to create arrays, it's time for c++ to shine!
 Building the embedder is very simple. All you have to do is adjust some settings in your cmake file.
 **cxxmbd** has 3 different build modes, depending on your intent: *attach*, *include* and *standalone*.
 The first mode, *attach*, is used to build the utility in the hot reloading embed mode.
-The other two, *include* and *standalone*, are the command line options. 
+The other two, *include* and *standalone*, are different methods of creating a command line interface. 
 The use of *attach* is currently unsupported.
 
 ### *Building the CLI(s)*
@@ -37,7 +37,7 @@ add_subdirectory(cxxmbd)
 add_executable(foo ${MAIN_PATH})
 target_link_libraries(foo PUBLIC cxxmbd)
 ```
-``WinMain`` can be enabled by changing the variable to ``true``.
+``WinMain`` can be enabled by changing the associated variable to ``true``.
 
 ### *Using the CLI*
 
