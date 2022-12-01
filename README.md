@@ -1,25 +1,45 @@
 # cxxmbd
 
-cxxmbd is a set of utilities for embedding and decoding files as binary. It consists of two parts: a command line application, and a header only decoding utility. These can be used in combination to include raw data in your c++ applications, and then decode them on a user's device. Gone is the era of using xxd to create arrays, it's time for c++ to shine!
+**cxxmbd** is a set of utilities for embedding and decoding files as binary. 
+It consists of two parts: a command line application, and a header only decoding utility. 
+These can be used in combination to include raw data in your c++ applications, and then decode them on a user's device. 
+Gone is the era of using xxd to create arrays, it's time for c++ to shine!
 
-## Building the CLI
+## Modes of operation
 
-Building the embedder is very simple. All you have to do is include ``linux_main.cpp`` for linux/osx, or ``windows_main.cpp`` for Windows.
+Building the embedder is very simple. All you have to do is adjust some settings in your cmake file.
+**cxxmbd** has 3 different build modes, depending on your intent: *attach*, *include* and *standalone*.
+The first mode, *attach*, is used to build the utility in the hot reloading embed mode.
+The other two, *include* and *standalone*, are the command line options. 
+The use of *attach* is currently unsupported.
 
-If you wish to build it manually, create a main file on your IDE of choice, include ``cxxmbd.hpp``, and then write the following:
-```cpp
-int main(int argc, char* argv[]) {
-  try {
-    cxxmbd::handle_cl_args(argc, argv);
-  }
-  catch(std::exception& e) {
-    std::cout << e.what() << "\n\n";
-  }
-}
+### *Building the CLI(s)*
+
+We will first look at *include*, which allows you to add the **cxxmbd** source files 
+to an unrelated project. The following is an example of how to build in include mode:
+```cmake
+set(CXXMBD_MODE include)
+
+add_subdirectory(cxxmbd)
+add_executable(foo main.cpp lib.h)
+target_link_libraries(foo PUBLIC cxxmbd)
 ```
-You can then get started on embedding your files!
 
-## Using the CLI
+Next, we have *standalone*. This mode will build **cxxmbd** as a standalone project, with the method of inputting
+arguments left up to the user.
+
+To select the regular ``main`` function, use the following:
+```cmake
+set(CXXMBD_MODE standalone)
+set(CXXMBD_WINMAIN false)
+
+add_subdirectory(cxxmbd)
+add_executable(foo ${MAIN_PATH})
+target_link_libraries(foo PUBLIC cxxmbd)
+```
+``WinMain`` can be enabled by changing the variable to ``true``.
+
+### *Using the CLI*
 
 To embed data in a source file, you must add an ``EMBED_POINT`` to the source file. You can then run this:
 ```bash
@@ -34,7 +54,7 @@ For more info, run:
 cxxmbd --help
 ```
 
-## Decoding the data
+## Decoding your data
 
 Your data will be embedded using the name(s) of the files you input. For example, if you embed the file ``example.txt``, 
 ``struct<N> example {...};`` will be created. With this, you can now decode your files.
