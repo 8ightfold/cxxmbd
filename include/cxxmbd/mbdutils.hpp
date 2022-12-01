@@ -7,8 +7,12 @@
 #include <string_view>
 #include <vector>
 
-#ifdef _MSC_VER
-#include <Windows.h>
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#  define $on_windows
+#endif
+
+#ifdef $on_windows
+#include <windows.h>
 #include <codecvt>
 #include <locale>
 #endif
@@ -40,7 +44,7 @@ namespace cxxmbd {
         const std::string data;
     };
 
-    // For dll support
+    // For windows support
     struct argument_splitter
     {
         struct argv_t
@@ -65,7 +69,7 @@ namespace cxxmbd {
             data_t data = nullptr;
         };
 
-#ifdef _MSC_VER
+#ifdef $on_windows
         argument_splitter(const std::wstring cl) {
             LPWSTR* raw_wargv = CommandLineToArgvW(cl.c_str(), &argc);
             std::vector<std::wstring> wargv { raw_wargv, raw_wargv + argc };

@@ -109,8 +109,7 @@ namespace cxxmbd {
         return {};
     }
 
-    void handle_cl_args(int input_count, char* input_values[])
-    {
+    void handle_cl_args(int input_count, char* input_values[]) {
         if(input_count < 2) {
             std::cout << "Unknown command. Run 'cxxmbd --help' for more information.\n\n";
             return;
@@ -202,6 +201,6 @@ namespace cxxmbd {
     }
 
     void handle_cl_args(argument_splitter& args) {
-        handle_cl_args(args.argc, (char**)args.argv);
+        handle_cl_args(args.argc, ((char**)args.argv) + 1);
     }
 }

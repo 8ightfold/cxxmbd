@@ -1,7 +1,7 @@
 #ifndef CXXMBD_CXXMBD_HPP
 #define CXXMBD_CXXMBD_HPP
 
-#define CXXMBD_VER "1.1.0"
+#define CXXMBD_VER "1.2.0"
 
 #include <algorithm>
 #include <cstddef>
