@@ -3,11 +3,6 @@ project(cxxmbd CXX)
 
 include(cmake/colorize.cmake)
 
-# $CXXMBD_MODE
-# > attach
-# > include
-# > standalone
-
 if(NOT DEFINED CXXMBD_MODE)
     set(CXXMBD_MODE attach)
     cmessage(LIGHT_WARNING "cxxmbd: mode set to \"${CXXMBD_MODE}\" by default")
@@ -21,7 +16,7 @@ endif()
 if(NOT (${CXXMBD_WINMAIN} STREQUAL true OR ${CXXMBD_WINMAIN} STREQUAL false))
     message(FATAL_ERROR "cxxmbd: unrecognized WinMain option \"${CXXMBD_WINMAIN}\"")
 endif()
-message(STATUS "cxxmbd: WinMain is set to ${Blue}${CXXMBD_WINMAIN}${ColReset}")
+
 
 # Compile modes
 if(${CXXMBD_MODE} STREQUAL attach)
@@ -32,6 +27,7 @@ elseif(${CXXMBD_MODE} STREQUAL include)
     target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 elseif(${CXXMBD_MODE} STREQUAL standalone)
+    message(STATUS "cxxmbd: WinMain is set to ${Blue}${CXXMBD_WINMAIN}${ColReset}")
     if(${CXXMBD_WINMAIN} STREQUAL true)
         set(MAIN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/os_main/windows_main.cpp)
     else()
