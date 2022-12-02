@@ -34,7 +34,7 @@ set(CXXMBD_MODE standalone)
 set(CXXMBD_WINMAIN false)
 
 add_subdirectory(cxxmbd)
-add_executable(foo ${MAIN_PATH})
+add_executable(foo $ENV{MAIN_PATH})
 target_link_libraries(foo PUBLIC cxxmbd)
 ```
 ``WinMain`` can be enabled by changing the variable to ``true``.

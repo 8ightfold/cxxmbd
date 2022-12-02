@@ -18,6 +18,8 @@
 #endif
 
 #define EMBED_POINT
+#define EMBED_BEGIN
+#define EMBED_END
 
 template <std::size_t N>
 using byte_block_t = unsigned char[N];

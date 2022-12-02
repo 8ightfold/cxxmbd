@@ -1,4 +1,4 @@
-#include <cxxmbd/cxxmbd.hpp>
+#include "cxxmbd/cxxmbd.hpp"
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     try {

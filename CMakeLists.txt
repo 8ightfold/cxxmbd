@@ -18,24 +18,23 @@ if(NOT (${CXXMBD_WINMAIN} STREQUAL true OR ${CXXMBD_WINMAIN} STREQUAL false))
 endif()
 
 
+add_library(${PROJECT_NAME} STATIC cli/cxxmbd/cxxmbd.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC cli)
+
 # Compile modes
 if(${CXXMBD_MODE} STREQUAL attach)
-    #TODO: implement this
+    #TODO: implement this and .xmbd
+    message(STATUS "cxxmbd: WinMain is set to ${Blue}${CXXMBD_WINMAIN}${ColReset}")
+    target_include_directories(${PROJECT_NAME} PUBLIC hotreload)
 
 elseif(${CXXMBD_MODE} STREQUAL include)
-    add_library(${PROJECT_NAME} STATIC include/cxxmbd/cxxmbd.cpp)
-    target_include_directories(${PROJECT_NAME} PUBLIC include)
-
 elseif(${CXXMBD_MODE} STREQUAL standalone)
     message(STATUS "cxxmbd: WinMain is set to ${Blue}${CXXMBD_WINMAIN}${ColReset}")
     if(${CXXMBD_WINMAIN} STREQUAL true)
-        set(MAIN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/os_main/windows_main.cpp)
+        set(ENV{MAIN_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/os_main/cli/windows_main.cpp)
     else()
-        set(MAIN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/os_main/linux_main.cpp)
+        set(ENV{MAIN_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/os_main/cli/linux_main.cpp)
     endif()
-    add_library(${PROJECT_NAME} STATIC include/cxxmbd/cxxmbd.cpp)
-    target_include_directories(${PROJECT_NAME} PUBLIC include)
-
 else()
     message(FATAL_ERROR "cxxmbd: unrecognized compile mode \"${CXXMBD_MODE}\"")
 endif()
