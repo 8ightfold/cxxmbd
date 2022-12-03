@@ -3972,7 +3972,7 @@ TOML_NAMESPACE_START
 
 		TOML_NODISCARD
 		TOML_EXPORTED_MEMBER_FUNCTION
-		node_view<node> operator[](const toml::path& path) noexcept;
+		node_view<node> operator[](const char *path) noexcept;
 
 		TOML_NODISCARD
 		TOML_EXPORTED_MEMBER_FUNCTION
@@ -8210,7 +8210,7 @@ TOML_NAMESPACE_START
 		using node::operator[]; // inherit operator[toml::path]
 
 		TOML_NODISCARD
-		node_view<node> operator[](std::string_view key) noexcept
+        node_view<node> operator[](std::string_view key) noexcept
 		{
 			return node_view<node>{ get(key) };
 		}
@@ -10409,7 +10409,7 @@ TOML_NAMESPACE_START
 #endif // TOML_ENABLE_WINDOWS_COMPAT
 
 	TOML_EXTERNAL_LINKAGE
-	node_view<node> node::operator[](const path& p) noexcept
+	node_view<node> node::operator[](const char *p) noexcept
 	{
 		return toml::at_path(*this, p);
 	}
@@ -15771,11 +15771,8 @@ TOML_ANON_NAMESPACE_START
 		std::ifstream file;
 		TOML_OVERALIGNED char file_buffer[sizeof(void*) * 1024u];
 		file.rdbuf()->pubsetbuf(file_buffer, sizeof(file_buffer));
-#if TOML_WINDOWS
-		file.open(impl::widen(file_path_str), std::ifstream::in | std::ifstream::binary | std::ifstream::ate);
-#else
-		file.open(file_path_str, std::ifstream::in | std::ifstream::binary | std::ifstream::ate);
-#endif
+        file.open(file_path_str, std::ifstream::in | std::ifstream::binary | std::ifstream::ate);
+
 		if (!file.is_open())
 			TOML_PARSE_FILE_ERROR("File could not be opened for reading", file_path_str);
 

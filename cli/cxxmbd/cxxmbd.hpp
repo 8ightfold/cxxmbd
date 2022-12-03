@@ -1,13 +1,10 @@
 #ifndef CXXMBD_CXXMBD_HPP
 #define CXXMBD_CXXMBD_HPP
 
-#define CXXMBD_VER "1.2.1"
-
 #include <algorithm>
 #include <cstddef>
 #include <exception>
 #include <iostream>
-#include <optional>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -31,13 +28,15 @@ namespace cxxmbd {
     dump_to_path(fs::path& path, std::stringstream& ss);
 
     [[nodiscard]]
-    std::optional<std::size_t>
+    strspan
     embed_location(fs::path& path, std::string& str);
 
-    void handle_cl_args(int input_count, char* input_values[]);
+    void
+    handle_cl_args(int input_count, char* input_values[]);
 
-    // For use in dlls
-    void handle_cl_args(argument_splitter& args);
+    // For use with WinMain
+    void
+    handle_cl_args(argument_splitter& args);
 }
 
 #endif //CXXMBD_CXXMBD_HPP

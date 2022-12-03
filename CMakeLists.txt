@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 project(cxxmbd CXX)
 
+set(ENV{CXXMBD_VER} "1.3.0")
 include(cmake/colorize.cmake)
 
 if(NOT DEFINED CXXMBD_MODE)
@@ -17,15 +18,40 @@ if(NOT (${CXXMBD_WINMAIN} STREQUAL true OR ${CXXMBD_WINMAIN} STREQUAL false))
     message(FATAL_ERROR "cxxmbd: unrecognized WinMain option \"${CXXMBD_WINMAIN}\"")
 endif()
 
+if(NOT DEFINED DISABLE_ANSI)
+    set(DISABLE_ANSI false)
+endif()
 
-add_library(${PROJECT_NAME} STATIC cli/cxxmbd/cxxmbd.cpp)
+
+add_library(${PROJECT_NAME} STATIC cli/cxxmbd/cxxmbd.cpp reload/cxxmbd/os.cpp reload/cxxmbd/core.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC cli)
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+        EMBED_POINT= EMBED_START= EMBED_END=
+        CXXMBD_VER="$ENV{CXXMBD_VER}" PLATFORM_NAME="${CMAKE_SYSTEM_NAME}")
+if(${DISABLE_ANSI} STREQUAL true)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC DISABLE_ANSI=)
+endif()
+if(WIN32)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ON_WINDOWS=PLATFORM_NAME)
+elseif(UNIX)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ON_UNIX=PLATFORM_NAME)
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ON_UNKNOWN=PLATFORM_NAME)
+endif()
 
 # Compile modes
 if(${CXXMBD_MODE} STREQUAL attach)
-    #TODO: implement this and .xmbd
+    set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
     message(STATUS "cxxmbd: WinMain is set to ${Blue}${CXXMBD_WINMAIN}${ColReset}")
-    target_include_directories(${PROJECT_NAME} PUBLIC hotreload)
+    if(${CXXMBD_WINMAIN} STREQUAL true)
+        set(ENV{MAIN_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/os_main/reload/windows_main.cpp)
+    else()
+        set(ENV{MAIN_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/os_main/reload/linux_main.cpp)
+    endif()
+    target_include_directories(${PROJECT_NAME} PUBLIC reload)
+    add_executable(mbdcore $ENV{MAIN_PATH})
+    target_link_libraries(mbdcore ${PROJECT_NAME})
+    # TODO: compile files
 
 elseif(${CXXMBD_MODE} STREQUAL include)
 elseif(${CXXMBD_MODE} STREQUAL standalone)
