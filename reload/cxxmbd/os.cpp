@@ -57,7 +57,7 @@ namespace cxxmbd::os {
                                       (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
         std::size_t out_size = LocalSize(lpOutBuf) / sizeof(TCHAR);
         StringCchPrintf((LPTSTR)lpOutBuf,out_size,
-                        TEXT("os error: %s failed with error %d; %s"),
+                        TEXT("os error: \"%s\" failed with error %d; %s"),
                         lpszFunction, err_code, lpMsgBuf);
 
         if constexpr(std::is_same_v<LPTSTR, char*>) {

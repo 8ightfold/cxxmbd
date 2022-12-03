@@ -4,6 +4,12 @@
 
 #include <cxxmbd/cxxmbd.hpp>
 
+#ifdef CXXMBD_ENABLE_ENV_DEBUG
+#  define ENV_DEBUG(data) do { data } while(0);
+#else
+#  define ENV_DEBUG(data)
+#endif
+
 namespace cxxmbd {
     env::env(toml::parse_result& config) : config_settings(get_settings(config)) {
         using namespace std::string_literals;
@@ -13,7 +19,7 @@ namespace cxxmbd {
             for(const auto& [k, v] : env_table) {
                 if(auto* value = v.as_string()) config_env.add_env(k.str(), (*value)->c_str());
                 else throw custom_exception {
-                            "error: incorrect type used for environment variable "s + std::string{ k.str() } + "."
+                            "error: incorrect type used for environment variable \""s + std::string{ k.str() } + "\"."
                     };
             }
         }
@@ -61,21 +67,30 @@ namespace cxxmbd {
         }
     }
 
+
     static std::size_t
     replace_env(const env& vars, std::string& str, const strspan range) {
         std::int64_t front = range.pos + 2;
-        std::int64_t back = range.pos + range.len - 1;
+        std::int64_t back = range.pos + range.len - 2;
 
         while(str[front] == ' ') ++front;
         while(str[back] == ' ') --back;
-        if(front > back) throw custom_exception {
-                    "error: parsing of \""s + str + "\" failed."
-            };
 
-        std::string env_name = str.substr(front, back - front);
+        if(front > back) throw custom_exception {
+            "error: parsing of \""s + str + "\" failed; front > back."
+        };
+
+        std::string env_name = str.substr(front, back - front + 1);
         std::string replacement = vars[env_name];
 
-        str = str.replace(range.pos, range.len, replacement);
+        ENV_DEBUG(
+            std::cout << "  name: " << env_name << '\n';
+            std::cout << "  replace: " << replacement << '\n';
+            std::cout << "  range: { .pos = " << range.pos << ", .len = " << range.len << " }\n";
+        );
+
+        str.replace(range.pos, range.len, replacement);
+        ENV_DEBUG( std::cout << "  new: " << str << '\n'; );
         return range.pos + (replacement.size() - range.len);
     }
 
@@ -98,24 +113,27 @@ namespace cxxmbd {
                 if(not open_brackets.empty()) {
                     std::size_t pos = open_brackets.top();
                     open_brackets.pop();
+                    ENV_DEBUG( std::cout << str.substr(pos, current_location - pos + 1) << ":\n"; );
                     current_location = replace_env(vars, str, { .pos = pos, .len = current_location - pos + 1 });
                 }
                 else throw custom_exception {
-                            "error: '}' found without '${' in \""s + old_str + "\"."
-                    };
+                    "error: '}' found without '${' in \""s + old_str + "\"."
+                };
             }
         }
 
         if(not open_brackets.empty()) throw custom_exception {
-                    "error: '${' found without '}' in \""s + old_str + "\"."
-            };
+            "error: '${' found without '}' in \""s + old_str + "\"."
+        };
     }
+
 
     void
     parse_config(const fs::path& path) {
         toml::parse_result config = toml::parse_file(path.c_str());
         if(config.contains("embed")) {
             env config_env { config };
+
             if(config_env.config_settings.print_env) {
                 for(const auto& [k, v] : config_env.config_env.get_envs()) {
                     std::cout << ansi::blue << k;
@@ -127,6 +145,7 @@ namespace cxxmbd {
 
             verify_settings(config_env);
             auto embed_table { get_this_as(config, "embed", toml::table) };
+
             for(const auto& [k, v] : embed_table) {
                 fs::path embed_path { path.parent_path() /= k.str() };
 
@@ -137,7 +156,7 @@ namespace cxxmbd {
                 for(const auto& source : sources) {
                     std::string value {
                             check_node(source.as_string(),
-                                       std::string{ k.str() } + " source")->c_str()
+                            std::string{ k.str() } + " source")->c_str()
                     };
                     add_env_vars(config_env, value);
                     parsed_sources.push_back(value);
@@ -151,14 +170,15 @@ namespace cxxmbd {
                     std::cout << "}\n";
                 }
 
+
                 std::string filebuf {};
                 auto range { embed_location(embed_path, filebuf) };
                 auto ss { generate_output_stream(parsed_sources) };
-                auto new_file { filebuf.replace(range.pos, range.len, ss.str()) };
+                filebuf.replace(range.pos, range.len, ss.str());
 
                 std::ofstream output(embed_path);
                 if(output.is_open()) {
-                    output << new_file;
+                    output << filebuf;
                     output.close();
                     if(config_env.config_settings.print_successful) {
                         std::cout << "output to " << embed_path << " successfully.\n";
@@ -172,21 +192,23 @@ namespace cxxmbd {
     void
     forward_cl_args(int argc, char* argv[]) {
         using namespace std::string_literals;
-        os::enable_ansi_color();
+
+        try { os::enable_ansi_color(); }
+        catch(std::exception& e) { std::cout << e.what() << '\n'; }
+
+        fs::path path {};
         if(argc > 1) {
-            fs::path path { argv[1] };
+            path = argv[1];
             if(fs::is_directory(path)) {
                 path /= "mbdconfig.toml";
             }
-            if(not fs::exists(path)) throw custom_exception{
-                        "error: config file \""s + path.string() + "\" could not be found."
-                };
-            parse_config(path);
         }
-        else {
-            fs::path path = fs::current_path() / "mbdconfig.toml";
-            parse_config(path);
-        }
+        else path = fs::current_path() / "mbdconfig.toml";
+
+        if(not fs::exists(path)) throw custom_exception{
+            "error: config file \""s + path.string() + "\" could not be found."
+        };
+        parse_config(path);
     }
 
     void

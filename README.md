@@ -10,13 +10,28 @@ Gone is the era of using xxd to create arrays, it's time for c++ to shine!
 Building the embedder is very simple. All you have to do is adjust some settings in your cmake file.
 **cxxmbd** has 3 different build modes, depending on your intent: *attach*, *include* and *standalone*.
 The first mode, *attach*, is used to build the utility in the hot reloading embed mode.
-The other two, *include* and *standalone*, are different methods of creating a command line interface. 
-The use of *attach* is currently unsupported.
+The other two, *include* and *standalone*, are different methods of creating a command line interface.
+
+### *Attaching cxxmbd to your project*
+
+Adding the utility to your project is relatively easy, only requiring two things: a ``.toml`` file,
+and a dependency. First let's look at adding the dependency:
+```cmake
+set(CXXMBD_MODE attach)
+
+add_subdirectory(cxxmbd)
+add_executable(foo main.cpp lib.h)
+target_link_libraries(foo PUBLIC cxxmbd)
+add_dependencies(foo mbdrun)
+```
+With this, an executable will be generated, and when building, the program will look for a file called
+``mbdconfig.toml`` in your root build directory. An example ``.toml`` file can be found in ``examples``.
 
 ### *Building the CLI(s)*
 
-We will first look at *include*, which allows you to add the **cxxmbd** source files 
-to an unrelated project. The following is an example of how to build in include mode:
+Now let's look at building the program as a CLI. We will first look at *include*, 
+which allows you to add the **cxxmbd** source files to an unrelated project. 
+The following is an example of how to build in include mode:
 ```cmake
 set(CXXMBD_MODE include)
 

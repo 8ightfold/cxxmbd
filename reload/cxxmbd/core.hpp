@@ -22,7 +22,7 @@ namespace cxxmbd {
             else {
                 major = std::stoull(version.substr(0, first));
                 minor = std::stoull(version.substr(first + 1, second - first));
-                release = std::stoull(version.substr(second + 1));
+                patch = std::stoull(version.substr(second + 1));
             }
         }
 
@@ -31,7 +31,7 @@ namespace cxxmbd {
 
         friend bool
         operator>(const program_version& lhs, const program_version& rhs) {
-            if(lhs.major >= rhs.major && lhs.minor >= rhs.minor && lhs.release >= rhs.release) return true;
+            if(lhs.major >= rhs.major && lhs.minor >= rhs.minor && lhs.patch >= rhs.patch) return true;
             else if (lhs.major >= rhs.major && lhs.minor > rhs.minor) return true;
             else if (lhs.major > rhs.major) return true;
             else return false;
@@ -41,7 +41,7 @@ namespace cxxmbd {
         std::string data;
         std::size_t major;
         std::size_t minor;
-        std::size_t release;
+        std::size_t patch;
     };
 
     struct settings {
@@ -64,7 +64,7 @@ namespace cxxmbd {
             using namespace std::string_literals;
             auto& env { config_env[str] };
             if(env != "") return env;
-            else throw custom_exception { "error: environment variable "s + str + " not found." };
+            else throw custom_exception { "error: environment variable \""s + str + "\" not found." };
         }
     };
 
@@ -75,7 +75,7 @@ namespace cxxmbd {
         if(ret) return *ret;
         else {
             std::string type_name { cttypeid<T>.name() };
-            throw custom_exception { "error: incorrect type "s + type_name + " used for " + name + "." };
+            throw custom_exception { "error: incorrect type \""s + type_name + "\" used for \"" + name + "\"." };
         }
     }
 
@@ -83,7 +83,7 @@ namespace cxxmbd {
     check_node(auto* node, std::string name) {
         if(node) return *node;
         else throw custom_exception {
-                    "error: incorrect type used for "s + name + "."
+                    "error: incorrect type used for \""s + name + "\"."
             };
     }
 

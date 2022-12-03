@@ -1,0 +1,17 @@
+[settings]
+require_version = "2.0.0"
+include_os_env = true
+print_env = true
+print_parsed = false
+print_successful = false
+
+[env]
+DOWNLOAD = "C:/Users/you/Downloads"
+DOCS = "C:/Users/you/Documents"
+SCREENSHOTS = "C:/Users/you/Pictures/Screenshots"
+RECURSIVE = "${DOWNLOAD}"
+
+[embed]
+"main.cpp" = ["${  DOCS  }/hello.txt", "${DOCS}/goodbye.txt"]
+"test.hpp" = ["${RECURSIVE}/foo.png", "${SCREENSHOTS}/bar.png"]
+

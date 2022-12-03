@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 project(cxxmbd CXX)
 
-set(ENV{CXXMBD_VER} "1.3.0")
+set(ENV{CXXMBD_VER} "2.0.0")
 include(cmake/colorize.cmake)
 
 if(NOT DEFINED CXXMBD_MODE)
@@ -48,10 +48,14 @@ if(${CXXMBD_MODE} STREQUAL attach)
     else()
         set(ENV{MAIN_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/os_main/reload/linux_main.cpp)
     endif()
+
     target_include_directories(${PROJECT_NAME} PUBLIC reload)
     add_executable(mbdcore $ENV{MAIN_PATH})
     target_link_libraries(mbdcore ${PROJECT_NAME})
-    # TODO: compile files
+    add_custom_target(mbdrun
+            COMMAND mbdcore ${CMAKE_SOURCE_DIR}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
 
 elseif(${CXXMBD_MODE} STREQUAL include)
 elseif(${CXXMBD_MODE} STREQUAL standalone)

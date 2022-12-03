@@ -48,7 +48,7 @@ namespace cxxmbd {
         try { read_binary_contents(bin, file); }
         catch(std::exception& e) { std::cout << e.what() << "\n"; return; }
 
-        ss << "\nconstexpr binary_embed<" << bin.size() << "> " << file.stem().string() << " {\n";
+        ss << "\nconstexpr binary_embed<" << std::dec << bin.size() << "> " << file.stem().string() << " {\n";
         ss << "\t" << file.filename() << ", { ";
 
         std::span<byte_t> to_loop { bin.data(), bin.size() - 1 };
@@ -66,7 +66,7 @@ namespace cxxmbd {
         std::stringstream output_stream;
         output_stream << "EMBED_START\n";
         for(const auto& path : paths) create_embeddable_contents(output_stream, path);
-        output_stream << "\nEMBED_END\n";
+        output_stream << "\nEMBED_END";
         return output_stream;
     }
 
@@ -116,31 +116,29 @@ namespace cxxmbd {
             std::stringstream ss;
             ss << is.rdbuf();
             str = ss.str();
+            is.close();
 
             embed_point = str.find("EMBED_POINT");
             start_location = str.find("EMBED_START");
             end_location = str.find("EMBED_END");
 
             if(embed_point != std::string::npos) {
-                is.close();
                 if(start_location != std::string::npos || end_location != std::string::npos) {
                     throw custom_exception {
                         "error: 'EMBED_POINT' found with embed spans in \""s + path.filename().string() + "\""
                     };
                 }
-                return { .pos = start_location, .len = 11 };
+                return { .pos = embed_point, .len = 11 };
             }
 
             if(start_location != std::string::npos && end_location != std::string::npos) {
-                is.close();
                 auto length = (end_location + 9) - start_location;
                 return { .pos = start_location, .len = length };
             }
 
-            is.close();
-            throw custom_exception{ "error: could not locate embed point in \""s + path.filename().string() + "\"." };
+            throw custom_exception{ "error: could not locate embed point in \""s + path.string() + "\"." };
         }
-        throw custom_exception{ "error: could not open file \""s + path.filename().string() + "\"." };
+        throw custom_exception{ "error: could not open file \""s + path.string() + "\"." };
     }
 
 
