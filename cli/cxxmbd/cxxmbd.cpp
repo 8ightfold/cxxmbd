@@ -48,7 +48,7 @@ namespace cxxmbd {
         try { read_binary_contents(bin, file); }
         catch(std::exception& e) { std::cout << e.what() << "\n"; return; }
 
-        ss << "\nconstexpr binary_embed<" << std::dec << bin.size() << "> " << file.stem().string() << " {\n";
+        ss << "\ninline constexpr binary_embed<" << std::dec << bin.size() << "> " << file.stem().string() << " {\n";
         ss << "\t" << file.filename() << ", { ";
 
         std::span<byte_t> to_loop { bin.data(), bin.size() - 1 };
